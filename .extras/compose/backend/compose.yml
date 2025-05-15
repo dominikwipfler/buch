@@ -1,0 +1,29 @@
+# Copyright (C) 2024 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker compose up
+#           docker compose down
+
+# https://docs.docker.com/compose/compose-file
+# https://docs.docker.com/compose/compose-file/compose-file-v3
+# https://github.com/compose-spec/compose-spec/blob/master/schema/compose-spec.json
+
+# https://docs.docker.com/compose/compose-file/14-include
+include:
+  - path: ../postgres/compose.yml
+  #- path: ../mysql/compose.yml
+  - path: ../keycloak/compose.yml
+  - path: ../fakesmtp/compose.yml
+  #- path: ../prometheus-grafana/compose.yml

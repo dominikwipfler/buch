@@ -1,0 +1,85 @@
+# Copyright (C) 2023 - present Juergen Zimmermann
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# ==============================================================================
+# N o d e
+# ==============================================================================
+#node:
+#  port: 3000
+
+# ==============================================================================
+# D a t e n b a n k
+# ==============================================================================
+
+# "pg-native" erfordert zusaetzlich die lokale Installation von PostgreSQL
+# "better-sqlite3" erfordert node-gyp zum Uebersetzen, wenn das Docker-Image gebaut wird
+# ${env:LOCALAPPDATA}\node-gyp\Cache\<Node_Version>\include\node\v8config.h
+# npm rebuild better-sqlite3 --update-binary
+# npm i better-sqlite3
+
+db:
+  #type: postgres
+  #type: mysql
+  #type: sqlite
+
+  #host: localhost
+
+  #username: buch
+  #password: p
+  #passwordAdmin: p
+  #name: buch
+  populate: true
+
+# ==============================================================================
+# K e y c l o a k
+# ==============================================================================
+# "Client Secret" muss durch die Umgebungsvariable CLIENT_SECRET gesetzt werden
+keycloak:
+  #schema: http
+  host: localhost
+  port: 8880
+  #realm: nest
+  # siehe Keycloak Menuepunkt "Clients" > Tab "Clients list" > Spalte "Client ID"
+  #clientId: nest-client
+  #tokenValidation: online
+
+# ==============================================================================
+# L o g g i n g
+# ==============================================================================
+log:
+  dir: ./log
+  level: debug
+  pretty: true
+
+# ==============================================================================
+# H e a l t h
+# ==============================================================================
+health:
+  prettyPrint: true
+
+# ==============================================================================
+# M a i l s e r v e r
+# ==============================================================================
+mail:
+  #activated: false
+  host: localhost
+  port: 8025
+  log: false
+
+# ==============================================================================
+# T e s t s
+# ==============================================================================
+#test:
+#  startDbServer: false

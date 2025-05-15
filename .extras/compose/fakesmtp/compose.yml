@@ -1,0 +1,55 @@
+# Copyright (C) 2021 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+services:
+  fakesmtp:
+    # https://hub.docker.com/r/gessnerfl/fake-smtp-server
+    # https://hub.docker.com/r/greenmail/standalone
+    image: gessnerfl/fake-smtp-server:2.4.1
+    ports:
+      - published: 8025
+        target: 8025
+        protocol: tcp
+      # Web Interface
+      - published: 8026
+        target: 8080
+        protocol: tcp
+      # HTTP Management API
+      #- published: 8027
+      #  target: 8081
+      #  protocol: tcp
+    volumes:
+      - type: bind
+        source: C:/Zimmermann/volumes/fakesmtp
+        target: /tmp
+    networks: [acme-network]
+    env_file: .env
+    hostname: fakesmtp
+    container_name: fakesmtp
+    cap_drop: [ALL]
+    stop_grace_period: 3s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 768M
+        reservations:
+          cpus: "0.5"
+          memory: 768M
+
+networks:
+  acme-network:
+    name: acme-network

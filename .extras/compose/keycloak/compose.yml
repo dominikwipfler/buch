@@ -1,0 +1,90 @@
+# Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   docker compose up
+#           docker compose exec keycloak bash
+#             ls /opt/keycloak/data
+#             ls -l /opt/keycloak/data/h2/keycloakdb.mv.db
+#           docker compose down
+
+# java -jar h2-2.2.224.jar
+#     https://github.com/keycloak/keycloak/blob/main/pom.xml#L95
+#     https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar
+#     Generic H2 (Embedded)
+#     JDBC URL:       jdbc:h2:tcp://localhost/C:/Zimmermann/volumes/keycloak/h2/keycloakdb
+#     Benutzername:   sa
+#     Passwort:       password
+#         Tabellen: USER_ENTITY, USER_ROLE_MAPPING, ...
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.4-0
+    #image: keycloak/keycloak:26.1.4-0
+    ports:
+      - published: 8880
+        target: 8080
+      - published: 8843
+        target: 8443
+    volumes:
+      - type: bind
+        source: C:/Zimmermann/volumes/keycloak/data
+        # mit Unterverzeichnis h2
+        target: /opt/keycloak/data
+      - type: bind
+        source: key.pem
+        # https://www.keycloak.org/server/enabletls
+        target: /opt/keycloak/conf/key.pem
+        read_only: true
+      - type: bind
+        source: certificate.crt
+        target: /opt/keycloak/conf/certificate.crt
+        read_only: true
+      # ggf. /opt/keycloak/conf/keycloak.conf
+    networks: [acme-network]
+    env_file: .env
+    hostname: keycloak
+    container_name: keycloak
+    user: keycloak:1000
+    # https://www.keycloak.org/server/containers#_trying_keycloak_in_development_mode
+    # --features=token-exchange
+    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev"]
+    #entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--help"]
+    cap_drop: [ALL]
+    # https://www.keycloak.org/server/health
+    # http://localhost:8880/health/ready
+    healthcheck:
+      # https://www.reddit.com/r/KeyCloak/comments/14a5a1y/how_to_enable_healthcheck_on_keycloak_on/
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 2
+      start_period: 30s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4G
+        reservations:
+          cpus: "2.0"
+          memory: 2G
+
+networks:
+  acme-network:
+    name: acme-network

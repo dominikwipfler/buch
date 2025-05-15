@@ -1,0 +1,112 @@
+# Copyright (C) 2024 - present Juergen Zimmermann, Hochschule Karlsruhe
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# Aufruf:   uv sync --all-groups
+#
+#           uvx ruff check locustfile.py
+#           uvx ruff format locustfile.py [--diff]
+
+# https://docs.astral.sh/uv/concepts/projects/init
+# https://docs.astral.sh/uv/configuration/files
+[project]
+name = "lasttest"
+version = "2025.4.1"
+description = "Lasttest für buch"
+readme = "README.md"
+requires-python = ">=3.13"
+license = "GPLv3"
+license-files = ["LICENSE"]
+keywords = ["Lasttest", "Python"]
+authors = [
+  { name = "Juergen Zimmermann", email = "Juergen.Zimmermann@h-ka.de" },
+]
+maintainers = [
+  { name = "Jürgen Zimmermann", email = "Juergen.Zimmermann@h-ka.de" },
+]
+# https://pypi.org/classifiers
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Software Development :: Testing :: Traffic Generation",
+]
+# https://docs.astral.sh/uv/concepts/projects/dependencies/#adding-dependencies
+dependencies = []
+
+[project.urls]
+homepage = "https://www.h-ka.de"
+documentation = "https://readthedocs.org"
+repository = "https://github.com"
+changelog = "https://github.com/juergenzimmermann/locust/blob/master/CHANGELOG.md"
+
+# https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups
+[dependency-groups]
+# https://docs.astral.sh/uv/concepts/projects/dependencies/#development-dependencies
+dev = ["locust>=2.33.1"]
+lint = [
+  # https://docs.astral.sh/ruff
+  "ruff>=0.9.10",
+]
+
+[tool.ruff]
+preview = true
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/rules
+select = [
+  "B",      # flake8-bugbear https://github.com/PyCQA/flake8-bugbear
+  "ASYNC",  # flake8-async https://github.com/python-trio/flake8-async
+  "S",      # flake8-bandit https://github.com/tylerwince/flake8-bandit Bandit>=1.7.1
+  "A",      # flake8-builtins https://github.com/gforcada/flake8-builtins
+  "COM",    # flake8-commas https://github.com/PyCQA/flake8-commas
+  "C4",     # flake8-comprehensions https://github.com/adamchainz/flake8-comprehensions
+  "ISC001", # flake8-implicit-str-concat https://github.com/flake8-implicit-str-concat/flake8-implicit-str-concat
+  "PIE",    # flake8-pie https://github.com/sbdchd/flake8-pie
+  "RET",    # flake8-return https://github.com/afonasev/flake8-return
+  "SIM",    # flake8-simplify https://github.com/MartinThoma/flake8-simplify
+  "I",      # isort https://github.com/PyCQA/isort
+  "N",      # pep8-naming https://github.com/PyCQA/pep8-naming
+  "PERF",   # Perflint https://github.com/tonybaloney/perflint
+  "E",      # pycodestyle https://github.com/pycqa/pycodestyle
+  "W",      # pycodestyle (warning)
+  "D",      # pydoclint https://github.com/jsh9/pydoclint
+  "F",      # Pyflakes https://github.com/PyCQA/pyflakes
+  "PL",     # Pylint https://pypi.org/project/pylint
+  "UP",     # pyupgrade https://github.com/asottile/pyupgrade
+  "FURB",   # refurb https://github.com/dosisod/refurb
+  "RUF",    # Ruff-specific rules https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+]
+ignore = [
+  "D203",   # https://docs.astral.sh/ruff/rules/incorrect-blank-line-before-class
+  "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line
+  "RET503", # https://docs.astral.sh/ruff/rules/implicit-return
+  "RUF012",
+  "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma
+]
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md#sample-pyprojecttoml-file
+[tool.pyright]
+pythonVersion = "3.13"
+include = ["src"]
+exclude = ["**/__pycache__"]

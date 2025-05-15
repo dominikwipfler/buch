@@ -1,0 +1,90 @@
+# https://git-scm.com/docs/gitignore#_pattern_format
+
+# compiled output
+dist
+
+# Abhaengige Dateien durch npm
+node_modules
+
+# Generierte Dateien
+build
+.extras/doc/projekthandbuch/html/*
+.extras/doc/folien/*.html
+.extras/doc/api/*
+.extras/doc/ReadMe.html
+scripts/dependency-check-report.html
+node-ts
+temp
+tmp
+dependencies.svg
+
+# Sensible Daten (Passwort, Token, private Schluessel)
+.extras/compose/db/mysql/db_root_password.txt
+.extras/compose/db/postgres/db_password.txt
+.extras/lasttest-locust/__pycache__
+.extras/lasttest-locust/.venv
+.extras/postman
+.extras/*.png
+.extras/*.jpeg
+.extras/*.gif
+.extras/*.mp4
+.extras/*.mpeg
+.extras/*.mkv
+.extras/*.avi
+.extras/*.ogg
+.extras/*.webm
+src/config/resources/tls/key.pem
+sonar-project.properties
+
+# Logs
+log
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.scannerwork
+
+# Prometheus und Grafana
+.extras/compose/prometheus-grafana/prometheus-data/*
+.extras/compose/prometheus-grafana/grafana.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+coverage
+.nyc_output
+.clinic
+__tests__/buch/__snapshots__
+
+# SonarQube
+.sonar
+
+# Snyk
+.snyk
+snyk_report.*
+snyk-*.json
+snyk-*.log
+
+# IDEs and editors
+.idea
+*.iml
+/.env
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.sonarlint
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
