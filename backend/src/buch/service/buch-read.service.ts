@@ -191,11 +191,12 @@ export class BuchReadService {
         const queryBuilder = this.#queryBuilder.build({}, pageable);
         const buecher = await queryBuilder.getMany();
         if (buecher.length === 0) {
-            throw new NotFoundException(`Ungueltige Seite "${pageable.number}"`);
+            throw new NotFoundException(
+                `Ungueltige Seite "${pageable.number}"`,
+            );
         }
         const totalElements = await queryBuilder.getCount();
         return this.#createSlice(buecher, totalElements);
-
     }
 
     #createSlice(buecher: Buch[], totalElements: number) {
