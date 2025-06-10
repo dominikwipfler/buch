@@ -14,4 +14,23 @@ export default function LoginPage() {
     if (typeof window !== 'undefined' && localStorage.getItem('token')) {
       router.replace('/buecher');
     }
-  }, [router]); }
+  }, [router]);
+
+  const handleLogin = async () => {
+    try {
+      const res = await fetch('https://localhost:3000/auth/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      if (!res.ok) throw new Error('Login fehlgeschlagen');
+      const data = await res.json();
+      localStorage.setItem('token', data.access_token);
+      window.dispatchEvent(new Event('loginChanged'));
+      setError(null);
+      router.push('/buecher');
+    } catch (e: any) {
+      setError(e.message || 'Login fehlgeschlagen');
+    }
+  };
+}
