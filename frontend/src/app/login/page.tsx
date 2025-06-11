@@ -33,4 +33,28 @@ export default function LoginPage() {
       setError(e.message || 'Login fehlgeschlagen');
     }
   };
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '80vh',
+      }}
+    >
+      <Paper sx={{ p: 4, minWidth: 320 }}>
+        <Typography variant="h5" gutterBottom>
+          Login
+        </Typography>
+        <TextField
+          label="Benutzername"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          fullWidth
+          margin="normal"
+          inputProps={{ 'aria-label': 'Benutzername' }}
+        />    
+    </Paper>
+  </Box>
+);
 }
