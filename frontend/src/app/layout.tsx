@@ -21,3 +21,24 @@ const theme = createTheme({
     },
   },
 });
+export default function RootLayout({ children }: RootLayoutProps) {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLogin = () => setLoggedIn(!!localStorage.getItem('token'));
+    checkLogin();
+    window.addEventListener('storage', checkLogin);
+    window.addEventListener('loginChanged', checkLogin);
+    return () => {
+      window.removeEventListener('storage', checkLogin);
+      window.removeEventListener('loginChanged', checkLogin);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setLoggedIn(false);
+    window.dispatchEvent(new Event('loginChanged'));
+    window.location.href = '/';
+  };
+}
