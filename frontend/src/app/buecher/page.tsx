@@ -115,5 +115,79 @@ export default function BuecherPage() {
     }
     setLoading(false);
   };
+
+  // Buch anlegen
+  const handleCreateBook = async () => {
+    try {
+      if (!newBook.isbn || !newBook.titel.titel || !newBook.datum) {
+        alert('Bitte alle Pflichtfelder ausfüllen!');
+        return;
+      }
+      if (
+        !newBook.isbn ||
+        !newBook.titel.titel ||
+        !newBook.art ||
+        !newBook.preis ||
+        isNaN(parseFloat(newBook.preis)) ||
+        !newBook.rabatt ||
+        isNaN(parseFloat(newBook.rabatt)) ||
+        !newBook.homepage ||
+        !newBook.abbildungen[0].beschriftung ||
+        !newBook.abbildungen[0].contentType
+      ) {
+        alert('Bitte alle Pflichtfelder korrekt ausfüllen!');
+        return;
+      }
+      const res = await fetch('https://localhost:3000/rest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+        body: JSON.stringify({
+          isbn: newBook.isbn,
+          rating: newBook.rating,
+          art: newBook.art,
+          preis: newBook.preis ? Number(newBook.preis) : 0,
+          rabatt: newBook.rabatt ? Number(newBook.rabatt) : 0,
+          lieferbar: newBook.lieferbar,
+          datum: newBook.datum,
+          homepage: newBook.homepage || 'https://example.com',
+          schlagwoerter: newBook.schlagwoerter
+            .split(',')
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0),
+          titel: {
+            titel: newBook.titel.titel,
+            untertitel: newBook.titel.untertitel,
+          },
+          abbildungen: newBook.abbildungen
+            .filter((a) => a.beschriftung && a.contentType)
+            .map((a) => ({
+              beschriftung: a.beschriftung,
+              contentType: a.contentType,
+            })),
+        }),
+      });
+      if (res.status !== 201) throw new Error(`Fehler: ${res.status}`);
+      setOpen(false);
+      setNewBook({
+        isbn: '',
+        rating: 1,
+        art: '',
+        preis: '',
+        rabatt: '',
+        lieferbar: false,
+        datum: new Date().toISOString().slice(0, 10),
+        homepage: '',
+        schlagwoerter: '',
+        titel: { titel: '', untertitel: '' },
+        abbildungen: [{ beschriftung: '', contentType: '' }],
+      });
+      handleSearch();
+    } catch (e: any) {
+      alert(e.message || 'Fehler beim Anlegen');
+    }
+  };
   };)
 }
