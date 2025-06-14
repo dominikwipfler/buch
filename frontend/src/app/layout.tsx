@@ -21,6 +21,7 @@ const theme = createTheme({
     },
   },
 });
+
 export default function RootLayout({ children }: RootLayoutProps) {
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -41,4 +42,58 @@ export default function RootLayout({ children }: RootLayoutProps) {
     window.dispatchEvent(new Event('loginChanged'));
     window.location.href = '/';
   };
+
+  return (
+    <html lang="de">
+      <body>
+        <ThemeProvider theme={theme}>
+          <AppBar position="static" color="primary" elevation={2}>
+            <Toolbar>
+              {/* Statt BookIcon und Text: Dein Favicon als Bild */}
+              <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  style={{ width: 250, height: 60, marginRight: 8 }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: 2,
+                }}
+              >
+                <Button color="inherit" component={Link} href="/">
+                  Home
+                </Button>
+                {loggedIn && (
+                  <>
+                    <Button color="inherit" component={Link} href="/buecher">
+                      Bücher
+                    </Button>
+                    <Button color="inherit" component={Link} href="/profil">
+                      Profil
+                    </Button>
+                  </>
+                )}
+                {!loggedIn && (
+                  <Button color="inherit" component={Link} href="/login">
+                    Login
+                  </Button>
+                )}
+                {loggedIn && (
+                  <Button color="inherit" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                )}
+              </Box>
+            </Toolbar>
+          </AppBar>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }

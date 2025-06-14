@@ -33,6 +33,7 @@ export default function LoginPage() {
       setError(e.message || 'Login fehlgeschlagen');
     }
   };
+
   return (
     <Box
       sx={{
@@ -53,8 +54,8 @@ export default function LoginPage() {
           fullWidth
           margin="normal"
           inputProps={{ 'aria-label': 'Benutzername' }}
-        />    
-     <TextField
+        />
+        <TextField
           label="Passwort"
           type="password"
           value={password}

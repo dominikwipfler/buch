@@ -71,6 +71,22 @@ export default function BuecherPage() {
   const [token, setToken] = useState<string | null>(null);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
+  // Buch-Dialog und neues Buch
+  const [open, setOpen] = useState(false);
+  const [newBook, setNewBook] = useState({
+    isbn: '',
+    rating: 1,
+    art: '',
+    preis: '',
+    rabatt: '',
+    lieferbar: false,
+    datum: new Date().toISOString().slice(0, 10),
+    homepage: '',
+    schlagwoerter: '',
+    titel: { titel: '', untertitel: '' },
+    abbildungen: [{ beschriftung: '', contentType: '' }],
+  });
+
   // Token aus localStorage holen (wenn Login auf /login war)
   useEffect(() => {
     const t =
@@ -189,6 +205,12 @@ export default function BuecherPage() {
       alert(e.message || 'Fehler beim Anlegen');
     }
   };
+
+  // Initiale Suche beim ersten Laden
+  useEffect(() => {
+    handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <Container sx={{ mt: 4 }}>
@@ -329,6 +351,12 @@ export default function BuecherPage() {
           ) : (
             <>
               {/* Linke Spalte: Suchformular */}
+              <Grid item xs={12} md={6}>
+                <Typography variant="h5" gutterBottom>
+                  Bücher suchen
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+                <Box
                   component="form"
                   sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
                 >
