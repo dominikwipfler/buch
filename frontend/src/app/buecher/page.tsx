@@ -329,5 +329,187 @@ export default function BuecherPage() {
           ) : (
             <>
               {/* Linke Spalte: Suchformular */}
-  };)
+                  component="form"
+                  sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                >
+                  <TextField
+                    label="Buchtitel"
+                    value={titel}
+                    onChange={(e) => setTitel(e.target.value)}
+                    fullWidth
+                    inputProps={{ 'aria-label': 'Buchtitel' }}
+                  />
+                  <TextField
+                    label="Schlagwörter"
+                    value={schlagwoerter}
+                    onChange={(e) => setSchlagwoerter(e.target.value)}
+                    fullWidth
+                    inputProps={{ 'aria-label': 'Schlagwörter' }}
+                  />
+                  <TextField
+                    select
+                    label="Rating"
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
+                    fullWidth
+                    inputProps={{ 'aria-label': 'Rating' }}
+                  >
+                    <MenuItem value="">Alle</MenuItem>
+                    <MenuItem value="1">1</MenuItem>
+                    <MenuItem value="2">2</MenuItem>
+                    <MenuItem value="3">3</MenuItem>
+                    <MenuItem value="4">4</MenuItem>
+                    <MenuItem value="5">5</MenuItem>
+                  </TextField>
+                  <RadioGroup
+                    row
+                    value={art}
+                    onChange={(e) => setArt(e.target.value)}
+                  >
+                    <FormControlLabel
+                      value=""
+                      control={<Radio />}
+                      label="Alle"
+                    />
+                    <FormControlLabel
+                      value="EPUB"
+                      control={<Radio />}
+                      label="EPUB"
+                    />
+                    <FormControlLabel
+                      value="HARDCOVER"
+                      control={<Radio />}
+                      label="Hardcover"
+                    />
+                    <FormControlLabel
+                      value="PAPERBACK"
+                      control={<Radio />}
+                      label="Paperback"
+                    />
+                  </RadioGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={verfuegbar}
+                        onChange={(e) => setVerfuegbar(e.target.checked)}
+                      />
+                    }
+                    label="Nur verfügbare Bücher"
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={handleSearch}
+                    disabled={loading}
+                  >
+                    {loading ? 'Suche läuft...' : 'Suchen'}
+                  </Button>
+                  {error && <Typography color="error">{error}</Typography>}
+                </Box>
+                <Button
+                  variant="outlined"
+                  sx={{ mt: 2 }}
+                  onClick={() => setOpen(true)}
+                >
+                  Neues Buch anlegen
+                </Button>
+              </Grid>
+              {/* Rechte Spalte: Ergebnisse + Details */}
+              <Grid item xs={12} md={6} sx={{ height: 600 }}>
+                <Typography variant="h6" gutterBottom>
+                  Ergebnisse
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+                <Grid container spacing={2}>
+                  <Grid item xs={selectedBook ? 6 : 12}>
+                    <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+                      {(() => {
+                        const gefilterteBuecher = books
+                          .filter((book) => !searchVerfuegbar || book.lieferbar)
+                          .filter(
+                            (book) => !searchArt || book.art === searchArt,
+                          );
+                        if (gefilterteBuecher.length === 0) {
+                          return (
+                            <ListItem>
+                              <ListItemText primary="Keine Ergebnisse." />
+                            </ListItem>
+                          );
+                        }
+                        return gefilterteBuecher.map((book) => (
+                          <ListItem key={book.id} divider disablePadding>
+                            <ListItemButton
+                              onClick={() => setSelectedBook(book)}
+                              selected={selectedBook?.id === book.id}
+                            >
+                              <ListItemText
+                                primary={
+                                  book.titel
+                                    ? book.titel.titel +
+                                      (book.titel.untertitel
+                                        ? `: ${book.titel.untertitel}`
+                                        : '')
+                                    : 'Kein Titel'
+                                }
+                                secondary={
+                                  <>
+                                    <span>ISBN: {book.isbn}</span>
+                                    <br />
+                                    <span>Typ: {book.art}</span>
+                                    <br />
+                                    <span>
+                                      Lieferbar:{' '}
+                                      {book.lieferbar
+                                        ? 'Verfügbar'
+                                        : 'Nicht verfügbar'}
+                                    </span>
+                                  </>
+                                }
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        ));
+                      })()}
+                    </List>
+                  </Grid>
+                  {selectedBook && (
+                    <Grid item xs={6}>
+                      <Paper sx={{ p: 2, height: '100%' }}>
+                        <Typography variant="h6">Details</Typography>
+                        <Divider sx={{ mb: 2 }} />
+                        <Typography variant="body1">
+                          <strong>ISBN:</strong> {selectedBook.isbn}
+                          <br />
+                          <strong>Art:</strong> {selectedBook.art}
+                          <br />
+                          <strong>Preis:</strong> {selectedBook.preis} €<br />
+                          <strong>Rabatt:</strong> {selectedBook.rabatt} %<br />
+                          <strong>Lieferbar:</strong>{' '}
+                          {selectedBook.lieferbar ? 'Ja' : 'Nein'}
+                          <br />
+                          <strong>Datum:</strong>{' '}
+                          {new Date(selectedBook.datum).toLocaleDateString()}
+                          <br />
+                          <strong>Homepage:</strong> {selectedBook.homepage}
+                          <br />
+                          <strong>Schlagwörter:</strong>{' '}
+                          {selectedBook.schlagwoerter.join(', ')}
+                          <br />
+                        </Typography>
+                        <Button
+                          sx={{ mt: 2 }}
+                          onClick={() => setSelectedBook(null)}
+                        >
+                          Schließen
+                        </Button>
+                      </Paper>
+                    </Grid>
+                  )}
+                </Grid>
+              </Grid>
+            </>
+          )}
+        </Grid>
+      </Paper>
+    </Container>
+  );
 }
