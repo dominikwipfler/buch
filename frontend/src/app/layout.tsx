@@ -21,7 +21,6 @@ const theme = createTheme({
     },
   },
 });
-
 export default function RootLayout({ children }: RootLayoutProps) {
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -96,4 +95,5 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </body>
     </html>
   );
+
 }
