@@ -189,5 +189,145 @@ export default function BuecherPage() {
       alert(e.message || 'Fehler beim Anlegen');
     }
   };
+
+  return (
+    <Container sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 3 }}>
+        <Grid container spacing={4}>
+          {open ? (
+            // Buch anlegen Formular
+            <Grid item xs={12}>
+              <Typography variant="h6">Neues Buch anlegen</Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <TextField
+                  label="ISBN"
+                  value={newBook.isbn}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, isbn: e.target.value })
+                  }
+                  inputProps={{ 'aria-label': 'ISBN' }}
+                />
+                <TextField
+                  label="Titel"
+                  value={newBook.titel.titel}
+                  onChange={(e) =>
+                    setNewBook({
+                      ...newBook,
+                      titel: { ...newBook.titel, titel: e.target.value },
+                    })
+                  }
+                  inputProps={{ 'aria-label': 'Buchtitel' }}
+                />
+                <TextField
+                  label="Untertitel"
+                  value={newBook.titel.untertitel}
+                  onChange={(e) =>
+                    setNewBook({
+                      ...newBook,
+                      titel: { ...newBook.titel, untertitel: e.target.value },
+                    })
+                  }
+                  inputProps={{ 'aria-label': 'Buchuntertitel' }}
+                />
+                <TextField
+                  select
+                  label="Art"
+                  value={newBook.art}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, art: e.target.value })
+                  }
+                  inputProps={{ 'aria-label': 'Art' }}
+                >
+                  <MenuItem value="EPUB">EPUB</MenuItem>
+                  <MenuItem value="HARDCOVER">HARDCOVER</MenuItem>
+                  <MenuItem value="PAPERBACK">PAPERBACK</MenuItem>
+                </TextField>
+                <TextField
+                  label="Preis"
+                  value={newBook.preis}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, preis: e.target.value })
+                  }
+                  inputProps={{ 'aria-label': 'Preis' }}
+                />
+                <TextField
+                  label="Rabatt"
+                  value={newBook.rabatt}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, rabatt: e.target.value })
+                  }
+                  inputProps={{ 'aria-label': 'Rabatt' }}
+                />
+                <TextField
+                  label="Homepage"
+                  value={newBook.homepage}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, homepage: e.target.value })
+                  }
+                  inputProps={{ 'aria-label': 'Homepage' }}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={newBook.lieferbar}
+                      onChange={(e) =>
+                        setNewBook({ ...newBook, lieferbar: e.target.checked })
+                      }
+                    />
+                  }
+                  label="Lieferbar"
+                />
+                <TextField
+                  label="Schlagwörter (Komma getrennt)"
+                  value={newBook.schlagwoerter}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, schlagwoerter: e.target.value })
+                  }
+                />
+                <TextField
+                  label="Abbildung Beschriftung"
+                  value={newBook.abbildungen[0]?.beschriftung || ''}
+                  onChange={(e) =>
+                    setNewBook({
+                      ...newBook,
+                      abbildungen: [
+                        {
+                          ...newBook.abbildungen[0],
+                          beschriftung: e.target.value,
+                          contentType:
+                            newBook.abbildungen[0]?.contentType || '',
+                        },
+                      ],
+                    })
+                  }
+                  inputProps={{ 'aria-label': 'Abbildung Beschriftung' }}
+                />
+                <TextField
+                  label="Abbildung Content-Type"
+                  value={newBook.abbildungen[0]?.contentType || ''}
+                  onChange={(e) =>
+                    setNewBook({
+                      ...newBook,
+                      abbildungen: [
+                        {
+                          ...newBook.abbildungen[0],
+                          contentType: e.target.value,
+                          beschriftung:
+                            newBook.abbildungen[0]?.beschriftung || '',
+                        },
+                      ],
+                    })
+                  }
+                  inputProps={{ 'aria-label': 'Abbildung Content-Type' }}
+                />
+                <Button variant="contained" onClick={handleCreateBook}>
+                  Buch anlegen
+                </Button>
+                <Button onClick={() => setOpen(false)}>Abbrechen</Button>
+              </Box>
+            </Grid>
+          ) : (
+            <>
+              {/* Linke Spalte: Suchformular */}
   };)
 }
