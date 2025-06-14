@@ -33,4 +33,47 @@ export default function LoginPage() {
       setError(e.message || 'Login fehlgeschlagen');
     }
   };
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '80vh',
+      }}
+    >
+      <Paper sx={{ p: 4, minWidth: 320 }}>
+        <Typography variant="h5" gutterBottom>
+          Login
+        </Typography>
+        <TextField
+          label="Benutzername"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          fullWidth
+          margin="normal"
+          inputProps={{ 'aria-label': 'Benutzername' }}
+        />    
+     <TextField
+          label="Passwort"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          fullWidth
+          margin="normal"
+          inputProps={{ 'aria-label': 'Passwort' }}
+        />
+        {error && <Typography color="error">{error}</Typography>}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleLogin}
+          fullWidth
+          sx={{ mt: 2 }}
+        >
+          Login
+        </Button>
+      </Paper>
+    </Box>
+  );
 }
