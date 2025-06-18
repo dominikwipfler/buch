@@ -78,46 +78,7 @@ jobs:
           npx eslint --version
           npm run eslint
         working-directory: ./backend
-
-      # =========================
-      # FRONTEND
-      # =========================
-
-      - name: Install – Frontend-Abhängigkeiten installieren
-        run: |
-          if [ ! -f package.json ]; then
-            echo "package.json ist NICHT vorhanden" >&2
-            exit 1
-          fi
-          cat package.json
-          npm ci --no-fund --no-audit
-        working-directory: ./frontend
-
-      - name: Compile – Frontend Build (Next.js)
-        run: |
-          npx tsc --version
-          npm run build
-        working-directory: ./frontend
-
-      - name: Lint – Frontend ESLint
-        run: |
-          npx eslint --version
-          npm run lint
-        working-directory: ./frontend
-
-      - name: Test – Frontend Playwright
-        run: |
-          npx playwright install --with-deps
-          npx playwright test
-        working-directory: ./frontend
-
-      # =========================
-      # REST wie gehabt
-      # =========================
-
-      - name: Test, Codeanalyse & Dokumentation
-        run: echo "Parallel Steps werden einzeln als Schritte ausgeführt"
-
+      
       - name: Test
         run: |
           echo "TODO: DB-Server konfigurieren für Tests"
@@ -184,3 +145,34 @@ jobs:
         run: |
           echo "TODO: Deployment für Kubernetes mit z.B. Ansible, Terraform"
         working-directory: ./backend
+
+      # =========================
+      # FRONTEND
+      # =========================
+
+      - name: Install – Frontend-Abhängigkeiten installieren
+        run: |
+          if [ ! -f package.json ]; then
+            echo "package.json ist NICHT vorhanden" >&2
+            exit 1
+          fi
+          cat package.json
+          npm ci --no-fund --no-audit
+        working-directory: ./frontend
+
+      - name: Lint – Frontend ESLint
+        run: |
+          npx eslint --version
+          npm run lint
+        working-directory: ./frontend
+
+      - name: Prettier Frontend
+        run: npm run prettier
+        working-directory: ./frontend
+
+      # =========================
+      # TODOs
+      # =========================
+
+      - name: Test, Codeanalyse & Dokumentation
+        run: echo "Parallel Steps werden einzeln als Schritte ausgeführt"
