@@ -1,11 +1,9 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import Link from 'next/link';
-import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
-import BookIcon from '@mui/icons-material/Book';
-
-import { ReactNode } from 'react';
+import { AppBar, Toolbar, Box, Button } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Image from 'next/image';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -21,6 +19,7 @@ const theme = createTheme({
     },
   },
 });
+
 export default function RootLayout({ children }: RootLayoutProps) {
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -48,12 +47,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeProvider theme={theme}>
           <AppBar position="static" color="primary" elevation={2}>
             <Toolbar>
-              {/* Statt BookIcon und Text: Dein Favicon als Bild */}
+              {/* Statt <img>: Next.js <Image /> verwenden */}
               <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="/logo.png"
+                <Image
+                  src="/favicon.ico"
                   alt="Logo"
-                  style={{ width: 250, height: 60, marginRight: 8 }}
+                  width={32}
+                  height={32}
+                  style={{ marginRight: 8 }}
+                  priority
                 />
               </Box>
               <Box
@@ -95,5 +97,4 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </body>
     </html>
   );
-
 }
