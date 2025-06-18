@@ -32,7 +32,6 @@ jobs:
       - name: Init – Workspace aufräumen
         run: |
           echo "GitHub Actions Job ${{ github.job }} (#${{ github.run_number }})"
-          # rm -rf src __tests__ node_modules dist .extras/doc/api .extras/doc/folien/folien.html .extras/doc/projekthandbuch/html || true
 
       - name: Install – Systeminfos ausgeben
         run: |
@@ -54,7 +53,11 @@ jobs:
           npm i -g npm
           npm --version
 
-      - name: Install – Abhängigkeiten installieren
+      # =========================
+      # BACKEND
+      # =========================
+
+      - name: Install – Backend-Abhängigkeiten installieren
         run: |
           if [ ! -f package.json ]; then
             echo "package.json ist NICHT vorhanden" >&2
@@ -62,44 +65,49 @@ jobs:
           fi
           cat package.json
           npm ci --no-fund --no-audit
+        working-directory: ./backend
 
-      - name: Compile – TypeScript kompilieren
+      - name: Compile – Backend TypeScript kompilieren
         run: |
           npx tsc --version
           ./node_modules/.bin/tsc
+        working-directory: ./backend
 
-      - name: Test, Codeanalyse & Dokumentation
-        run: echo "Parallel Steps werden einzeln als Schritte ausgeführt"
-
+      - name: Lint – Backend ESLint
+        run: |
+          npx eslint --version
+          npm run eslint
+        working-directory: ./backend
+      
       - name: Test
         run: |
           echo "TODO: DB-Server konfigurieren für Tests"
           # npm run test:coverage
-
-      - name: ESLint
-        run: |
-          npx eslint --version
-          npm run eslint
+        working-directory: ./backend
 
       - name: Security Audit
         run: |
           echo "TODO: npm audit überspringen wegen bekannter Issues"
           # npm audit --omit=dev
+        working-directory: ./backend
 
       - name: AsciiDoctor
         run: |
           npx asciidoctor --version
           npm run asciidoctor
+        working-directory: ./backend
 
       - name: reveal.js
         run: |
           npx asciidoctor-revealjs --version
           npm run revealjs
+        working-directory: ./backend
 
       - name: TypeDoc
         run: |
           npx typedoc --version
           npm run typedoc
+        working-directory: ./backend
 
       - name: Publish HTML Reports
         uses: peaceiris/actions-gh-pages@v3
@@ -107,22 +115,23 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: |
-            .extras/doc/projekthandbuch/html
-            .extras/doc/folien
-            .extras/doc/api
+            ./backend/.extras/doc/projekthandbuch/html
+            ./backend/.extras/doc/folien
+            ./backend/.extras/doc/api
 
       - name: ZIP & Archive Build-Artefakte
         if: success()
         run: |
           [ -f auto.zip ] && rm auto.zip || true
           [ -d dist ] && zip -r auto.zip dist || echo "Dist-Verzeichnis nicht vorhanden"
+        working-directory: ./backend
 
       - name: Upload auto.zip
         if: success()
         uses: actions/upload-artifact@main
         with:
           name: auto.zip
-          path: auto.zip
+          path: ./backend/auto.zip
 
       - name: Docker Image bauen
         run: |
@@ -130,7 +139,40 @@ jobs:
           # docker build -t juergenzimmermann/auto:${{ github.run_number }} .
           # docker push juergenzimmermann/auto:${{ github.run_number }}
           # docker push juergenzimmermann/auto:latest
+        working-directory: ./backend
 
       - name: Deployment für Kubernetes
         run: |
           echo "TODO: Deployment für Kubernetes mit z.B. Ansible, Terraform"
+        working-directory: ./backend
+
+      # =========================
+      # FRONTEND
+      # =========================
+
+      - name: Install – Frontend-Abhängigkeiten installieren
+        run: |
+          if [ ! -f package.json ]; then
+            echo "package.json ist NICHT vorhanden" >&2
+            exit 1
+          fi
+          cat package.json
+          npm ci --no-fund --no-audit
+        working-directory: ./frontend
+
+      - name: Lint – Frontend ESLint
+        run: |
+          npx eslint --version
+          npm run lint
+        working-directory: ./frontend
+
+      - name: Prettier Frontend
+        run: npm run prettier
+        working-directory: ./frontend
+
+      # =========================
+      # TODOs
+      # =========================
+
+      - name: Test, Codeanalyse & Dokumentation
+        run: echo "Parallel Steps werden einzeln als Schritte ausgeführt"
