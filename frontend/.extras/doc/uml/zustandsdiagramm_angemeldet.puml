@@ -1,0 +1,53 @@
+@startuml zustandsdiagramm_buecherseite
+skinparam dpi 400
+hide empty description
+
+title Zustand beim angemeldeten Benutzer – Bücherseite
+
+[*] --> Bücherseite
+
+state Bücherseite {
+    Bücherseite : User ist eingeloggt (JWT vorhanden)
+    Bücherseite : Startansicht: Bücher / Navigation sichtbar
+
+    state Navigation {
+        [*] --> Bücher
+        Bücher --> Bücher : (aktuelle Seite)
+        Bücher --> Home : Button "Home"
+        Bücher --> Profil : Button "Profil"
+        Bücher --> Home : Button "Logout"
+    }
+
+    state Suche {
+        [*] --> Suchformular
+        Suchformular --> Suchformular : Suchkriterien eingeben
+
+        Suchformular --> Warten: Button "Suchen"
+
+        state Suchergebnis {
+            state c <<choice>>
+            [*] --> c : Ergebnisprüfung
+            c --> KeineErgebnisse : Kein Buch gefunden
+            c --> GefundeneBuecher : Mindestens 1 Buch gefunden
+            GefundeneBuecher --> BuchDetails : Buch ausgewählt
+        }
+
+        Warten --> Suchergebnis : Antwort vom Server
+    }
+
+    Bücherseite --> Suche : Suchen aktiv
+    Bücherseite --> Neuanlage : Button "Neues Buch anlegen"
+
+    state Neuanlage {
+        [*] --> Eingabeformular
+        Eingabeformular --> Eingabeformular : Buchdaten eingeben
+
+        Eingabeformular --> Eingabeprüfung: Button "Buch anlegen"
+
+        state Eingabeprüfug <<choice>>
+        Eingabeprüfung --> Eingabeformular : Pflichtfelder korrekt ausfüllen
+        Eingabeprüfung --> [*] : Erfolgreiche Buchanlage
+    }
+}
+
+@enduml

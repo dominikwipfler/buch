@@ -1,0 +1,22 @@
+@startuml zustandsdiagramm_abgemeldet
+skinparam dpi 400
+hide empty description
+
+title Zustand: Abgemeldeter Benutzer 
+
+[*] --> Home : Start
+
+state Home {
+    Home : Willkommen zur Bücher-App!
+    Home : Bitte nutze die Navigation oben.
+
+    state Navigation {
+        [*] --> HomeButton
+        HomeButton --> HomeButton : Button "Home" (aktuelle Seite)
+        HomeButton --> Login : Button "Login"
+    }
+
+    
+}
+
+@enduml
