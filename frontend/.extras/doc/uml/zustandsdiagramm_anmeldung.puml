@@ -1,0 +1,24 @@
+@startuml zustand_login
+skinparam dpi 300
+hide empty description
+
+title Zustandsdiagramm – Loginprozess
+
+state "Login-Seite" as LoginPage {
+    [*] --> Eingabe : LoginPage geöffnet
+
+    Eingabe --> Eingabe : Benutzername / Passwort eingeben
+
+    Eingabe --> Absenden : Button "Login"
+
+    Absenden --> Erfolg : Login erfolgreich
+    Absenden --> Fehler : Login fehlgeschlagen
+
+    Fehler --> Meldung : Fehlermeldung anzeigen\n("Login fehlgeschlagen.")
+    Meldung --> Eingabe : Benutzer verbessert Eingaben
+
+    Erfolg --> Weiterleitung : Weiterleitung zur Bücherseite (/buecher)
+    Weiterleitung --> [*]
+}
+
+@enduml
