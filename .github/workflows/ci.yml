@@ -1,0 +1,178 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  #schedule:
+    #- cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    container:
+      image: node:23.9.0-bookworm
+      options: >-
+        --publish 3000:3000
+        --publish 5000:5000
+        --user root:root
+
+    defaults:
+      run:
+        shell: bash
+
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Init – Workspace aufräumen
+        run: |
+          echo "GitHub Actions Job ${{ github.job }} (#${{ github.run_number }})"
+
+      - name: Install – Systeminfos ausgeben
+        run: |
+          id
+          cat /etc/passwd
+          echo $PATH
+          pwd
+          uname -a
+          cat /etc/os-release
+          cat /etc/debian_version
+          apt-cache policy nodejs
+
+      - name: Install – System aktualisieren und Node/NPM prüfen
+        run: |
+          apt-get update --yes
+          apt-get upgrade --yes
+          python3 --version
+          node --version
+          npm i -g npm
+          npm --version
+
+      # =========================
+      # BACKEND
+      # =========================
+
+      - name: Install – Backend-Abhängigkeiten installieren
+        run: |
+          if [ ! -f package.json ]; then
+            echo "package.json ist NICHT vorhanden" >&2
+            exit 1
+          fi
+          cat package.json
+          npm ci --no-fund --no-audit
+        working-directory: ./backend
+
+      - name: Compile – Backend TypeScript kompilieren
+        run: |
+          npx tsc --version
+          ./node_modules/.bin/tsc
+        working-directory: ./backend
+
+      - name: Lint – Backend ESLint
+        run: |
+          npx eslint --version
+          npm run eslint
+        working-directory: ./backend
+      
+      - name: Test
+        run: |
+          echo "TODO: DB-Server konfigurieren für Tests"
+          # npm run test:coverage
+        working-directory: ./backend
+
+      - name: Security Audit
+        run: |
+          echo "TODO: npm audit überspringen wegen bekannter Issues"
+          # npm audit --omit=dev
+        working-directory: ./backend
+
+      - name: AsciiDoctor
+        run: |
+          npx asciidoctor --version
+          npm run asciidoctor
+        working-directory: ./backend
+
+      - name: reveal.js
+        run: |
+          npx asciidoctor-revealjs --version
+          npm run revealjs
+        working-directory: ./backend
+
+      - name: TypeDoc
+        run: |
+          npx typedoc --version
+          npm run typedoc
+        working-directory: ./backend
+
+      - name: Publish HTML Reports
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: |
+            ./backend/.extras/doc/projekthandbuch/html
+            ./backend/.extras/doc/folien
+            ./backend/.extras/doc/api
+
+      - name: ZIP & Archive Build-Artefakte
+        if: success()
+        run: |
+          [ -f auto.zip ] && rm auto.zip || true
+          [ -d dist ] && zip -r auto.zip dist || echo "Dist-Verzeichnis nicht vorhanden"
+        working-directory: ./backend
+
+      - name: Upload auto.zip
+        if: success()
+        uses: actions/upload-artifact@main
+        with:
+          name: auto.zip
+          path: ./backend/auto.zip
+
+      - name: Docker Image bauen
+        run: |
+          echo "TODO: Docker-Image bauen"
+          # docker build -t juergenzimmermann/auto:${{ github.run_number }} .
+          # docker push juergenzimmermann/auto:${{ github.run_number }}
+          # docker push juergenzimmermann/auto:latest
+        working-directory: ./backend
+
+      - name: Deployment für Kubernetes
+        run: |
+          echo "TODO: Deployment für Kubernetes mit z.B. Ansible, Terraform"
+        working-directory: ./backend
+
+      # =========================
+      # FRONTEND
+      # =========================
+
+      - name: Install – Frontend-Abhängigkeiten installieren
+        run: |
+          if [ ! -f package.json ]; then
+            echo "package.json ist NICHT vorhanden" >&2
+            exit 1
+          fi
+          cat package.json
+          npm ci --no-fund --no-audit
+        working-directory: ./frontend
+
+      - name: Lint – Frontend ESLint
+        run: |
+          npx eslint --version
+          npm run lint
+        working-directory: ./frontend
+
+      - name: Prettier Frontend
+        run: npm run prettier
+        working-directory: ./frontend
+
+      # =========================
+      # TODOs
+      # =========================
+
+      - name: Test, Codeanalyse & Dokumentation
+        run: echo "Parallel Steps werden einzeln als Schritte ausgeführt"
