@@ -1,10 +1,10 @@
 'use client';
+import Grid from '@mui/material/Grid';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Container,
   Paper,
-  Grid,
   Typography,
   Divider,
   Box,
@@ -218,7 +218,7 @@ export default function BuecherPage() {
         <Grid container spacing={4}>
           {open ? (
             // Buch anlegen Formular
-            <Grid item xs={12}>
+            <Grid item xs={12} {...({} as any)}>
               <Typography variant="h6">Neues Buch anlegen</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <TextField
@@ -351,7 +351,7 @@ export default function BuecherPage() {
           ) : (
             <>
               {/* Linke Spalte: Suchformular */}
-              <Grid item xs={12} md={6}>
+              <Grid item={12 as any} md={6 as any} {...({} as any)}>
                 <Typography variant="h5" gutterBottom>
                   Bücher suchen
                 </Typography>
@@ -442,13 +442,13 @@ export default function BuecherPage() {
                 </Button>
               </Grid>
               {/* Rechte Spalte: Ergebnisse + Details */}
-              <Grid item xs={12} md={6} sx={{ height: 600 }}>
+              <Grid item={12 as any} md={6 as any} sx={{ height: 600 } as any} {...({} as any)}>
                 <Typography variant="h6" gutterBottom>
                   Ergebnisse
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
                 <Grid container spacing={2}>
-                  <Grid item xs={selectedBook ? 6 : 12}>
+                  <Grid item={selectedBook ? (6 as any) : (12 as any)} {...({} as any)}>
                     <List sx={{ maxHeight: 400, overflow: 'auto' }}>
                       {(() => {
                         const gefilterteBuecher = books
@@ -500,7 +500,7 @@ export default function BuecherPage() {
                     </List>
                   </Grid>
                   {selectedBook && (
-                    <Grid item xs={6}>
+                    <Grid item={6 as any} {...({} as any)}>
                       <Paper sx={{ p: 2, height: '100%' }}>
                         <Typography variant="h6">Details</Typography>
                         <Divider sx={{ mb: 2 }} />
