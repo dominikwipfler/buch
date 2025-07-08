@@ -104,7 +104,7 @@ export default function BuecherPage() {
       const params = new URLSearchParams({
         ...(titel && { titel }),
         ...(rating && { rating }),
-        size: '1000',
+        size: '2',
         page: '0',
       });
       if (schlagwoerter) {
