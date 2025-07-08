@@ -179,7 +179,7 @@ export class BuchGetController {
         @Req() req: Request,
         @Headers('If-None-Match') version: string | undefined,
         @Res() res: Response,
-    ): Promise<Response<Buch | undefined>>{
+    ): Promise<Response<Buch | undefined>> {
         this.#logger.debug('getById: id=%s, version=%s', id, version);
 
         if (req.accepts(['json', 'html']) === false) {
